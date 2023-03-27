@@ -3,30 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MetaMask 签名和校验签名 纯静态 power by chatgpt 4</title>
+    <title>MetaMask 示例页面</title>
     <script src="https://cdn.jsdelivr.net/npm/web3@1.6.1/dist/web3.min.js"></script>
     <style>
         body {
+            font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .input-container textarea,
+        .input-container input {
+            width: 80%;
+            resize: none;
+            margin-bottom: 10px;
+        }
+
+        button {
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
     <p id="walletAddress">钱包地址: 未连接</p>
-    <textarea id="message" placeholder="在此输入消息" rows="5" cols="50"></textarea>
-    <button id="signMessage">签名消息</button>
-    <p id="signatureResult">签名结果: 无</p>
-
+    <div class="input-container">
+        <textarea id="message" placeholder="在此输入消息" rows="5"></textarea>
+        <button id="signMessage">签名消息</button>
+        <p id="signatureResult">签名结果: 无</p>
+    </div>
     <h3>验证签名</h3>
-    <textarea id="verifyMessageInput" placeholder="在此输入原始消息" rows="5" cols="50"></textarea>
-    <input id="signatureInput" type="text" placeholder="在此输入签名" size="100" />
-    <input id="addressInput" type="text" placeholder="在此输入地址" size="50" />
-    <button id="verifyMessage">验证签名</button>
-    <p id="verificationResult">验证结果: 无</p>
+    <div class="input-container">
+        <textarea id="verifyMessageInput" placeholder="在此输入原始消息" rows="5"></textarea>
+        <input id="signatureInput" type="text" placeholder="在此输入签名" />
+        <input id="addressInput" type="text" placeholder="在此输入地址" />
+        <button id="verifyMessage">验证签名</button>
+        <p id="verificationResult">验证结果: 无</p>
+    </div>
 
     <script>
         let web3;
