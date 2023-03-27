@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetaMask 签名和校验签名 纯静态 power by chatgpt 4</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.6.1/dist/web3.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <p id="walletAddress">钱包地址: 未连接</p>
+    <textarea id="message" placeholder="在此输入消息" rows="5" cols="50"></textarea>
+    <button id="signMessage">签名消息</button>
+    <p id="signatureResult">签名结果: 无</p>
+
+    <h3>验证签名</h3>
+    <textarea id="verifyMessageInput" placeholder="在此输入原始消息" rows="5" cols="50"></textarea>
+    <input id="signatureInput" type="text" placeholder="在此输入签名" size="100" />
+    <input id="addressInput" type="text" placeholder="在此输入地址" size="50" />
+    <button id="verifyMessage">验证签名</button>
+    <p id="verificationResult">验证结果: 无</p>
+
+    <script>
+        let web3;
+        let userAccount;
+
+        async function init() {
+            if (typeof window.ethereum !== 'undefined') {
+                web3 = new Web3(window.ethereum);
+                try {
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    userAccount = accounts[0];
+                    document.getElementById('walletAddress').innerHTML = `钱包地址: ${userAccount}`;
+                } catch (error) {
+                    alert('用户拒绝了连接请求');
+                }
+            } else {
+                alert('请安装 MetaMask!');
+            }
+        }
+
+        async function signMessage() {
+            const message = document.getElementById('message').value;
+            if (!message) {
+                alert('请输入消息');
+                return;
+            }
+
+            try {
+                const signature = await web3.eth.personal.sign(message, userAccount, '');
+                document.getElementById('signatureResult').innerHTML = `签名结果: ${signature}`;
+            } catch (error) {
+                console.error(error);
+                alert('签名失败');
+            }
+        }
+
+        async function verifyMessage() {
+            const message = document.getElementById('verifyMessageInput').value;
+            const signature = document.getElementById('signatureInput').value;
+            const address = document.getElementById('addressInput').value;
+
+            if (!message || !signature || !address) {
+                alert('请确保所有输入框都已填写');
+                return;
+            }
+
+            try {
+                const recoveredAddress = await web3.eth.personal.ecRecover(message, signature);
+                if (recoveredAddress.toLowerCase() === address.toLowerCase()) {
+                    document.getElementById('verificationResult').innerHTML = `验证结果: 签名验证成功`;
+                } else {
+                    document.getElementById('verificationResult').innerHTML = `验证结果: 签名验证失败`;
+                }
+            } catch (error) {
+                console.error(error);
+                alert('验证签名失败');
+}
+}
+document.getElementById('signMessage').addEventListener('click', signMessage);
+    document.getElementById('verifyMessage').addEventListener('click', verifyMessage);
+
+    window.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
